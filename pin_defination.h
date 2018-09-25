@@ -8,14 +8,25 @@
 #define LED7 PE11
 #define LED8 PE13
 #define RESET PE4
-//////////////////
+
+// for fullColorLED 
+#define TIM10_CH1 PB8
+#define TIM11_CH1 PB9
+#define TIM12_CH1 PB14
+
+// 別名で定義:
+#define RED   PB9
+#define GREEN PB8
+#define BLUE  PB14
+
+////////////////////
 
 /* pins for SW */
 #define SW1 PA4
 #define SW3 PA7
 #define SW4 PB0
 #define SW5 PB1
-/////////////////
+////////////////////
 
 /* pin for PWM */
 // for Timer1
@@ -35,9 +46,20 @@
 #define TIM8_CH2 PC7
 #define TIM8_CH3 PC8
 #define TIM8_CH4 PC9
+
 /////////////////////
 
+/* pins for A/D converter */
+#define ADC_IN10 PC0
+#define ADC_IN11 PC1
+#define ADC_IN12 PC2
+#define ADC_IN13 PC3
+#define ADC_IN14 PC4
+#define ADC_IN15 PC5
 
+/////////////////////
 
+/* pin for Buzzer */
+#define BZ PB15 // PWM(TIM12_CH2)
 
-  
+/////////////////////

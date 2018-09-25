@@ -16,8 +16,11 @@ void init_IO( void ) {
   pinMode( SW4,  INPUT );
   pinMode( SW5,  INPUT );
 
+  pinMode(TIM1_CH1, PWM);
+  pinMode(TIM1_CH2, PWM);
+  pinMode(TIM1_CH3, PWM);
+  pinMode(TIM1_CH4, PWM);
 
-/*
   pinMode(TIM2_CH1, PWM);
   pinMode(TIM2_CH2, PWM);
   pinMode(TIM2_CH3, PWM);
@@ -27,23 +30,16 @@ void init_IO( void ) {
   pinMode(TIM8_CH2, PWM);
   pinMode(TIM8_CH3, PWM);
   pinMode(TIM8_CH4, PWM);
-*/
-  digitalWrite( RESET, HIGH );
-}
 
-void init_TIM1( void ) {
-  pinMode(TIM1_CH1, PWM);
-  pinMode(TIM1_CH2, PWM);
-  pinMode(TIM1_CH3, PWM);
-  pinMode(TIM1_CH4, PWM);
-  Timer1.pause();                   // タイマー停止
-  Timer1.setPrescaleFactor(7200);   // システムクロック 72MHzを10ｋHzに分周
-  Timer1.setOverflow(10000 * 2);    // 周期を2秒に設定
-  pwmWrite(TIM1_CH1, 10000);         // PWMパルス幅を1秒に設定
+  pinMode( RED,     PWM);
+  pinMode( GREEN,   PWM);
+  pinMode( BLUE ,   PWM);  
 
-  Timer1.setCount(0);               // カウンタを0に設定
-  Timer1.refresh();                 // タイマ更新
-  Timer1.resume();                  // タイマースタート
+  pinMode( BZ, PWM );
+  
+  digitalWrite( RESET, HIGH );  // RESET SW LED
+  pwmWrite(RED, 60000);
+
 }
 
 
