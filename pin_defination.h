@@ -63,3 +63,18 @@
 #define BZ PB15 // PWM(TIM12_CH2)
 
 /////////////////////
+
+/* pins for 5V support. */
+#define SUB1 PD11
+#define SUB2 PD10
+#define SUB3 PD9
+#define SUB4 PD8
+
+/////////////////////
+
+/* pins for Serial.*/
+
+#define RX PB11
+#define TX PB10
+
+/////////////////////
