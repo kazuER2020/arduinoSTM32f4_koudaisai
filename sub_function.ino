@@ -377,8 +377,7 @@ int getR2( void ) {
   return ret;
 }
 
-int getJoystickPos(int pos) {
-  int raw[4] = {0, 0, 0, 0};
+void getJoystickPos( int pos ) {
 
   switch ( pos ) {
     case PS3_JOYSTICK_LEFT_X:
@@ -389,7 +388,6 @@ int getJoystickPos(int pos) {
 
         setColor(1, 0, 0);
 
-        return DC_Power[0];
       }
       break;
 
@@ -399,9 +397,6 @@ int getJoystickPos(int pos) {
            ps3data[3] == 0x40 && ps3data[5] == 0x40 && ps3data[6] == 0x40 ) {
         DC_Power[1] = ps3data[4];
         setColor(0, 0, 1);
-
-        return DC_Power[1];
-
       }
       break;
 
@@ -411,9 +406,6 @@ int getJoystickPos(int pos) {
            ps3data[3] == 0x40 && ps3data[4] == 0x40 && ps3data[6] == 0x40 ) {
         DC_Power[2] = ps3data[5];
         setColor(0, 1, 0);
-
-        return DC_Power[2];
- 
       }
       break;
     /*
@@ -424,12 +416,16 @@ int getJoystickPos(int pos) {
 
             raw[3] = ps3data[6];
             setColor(1, 0, 1);
- 
+
           }
           break;
     */
     default:
       break;
   }
+}
+
+int getDCpower( int motor_num ) {
+  return DC_Power[ motor_num ];
 }
 
