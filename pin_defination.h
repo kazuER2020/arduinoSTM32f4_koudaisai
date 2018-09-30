@@ -78,3 +78,11 @@
 #define TX PB10
 
 /////////////////////
+
+/* pins for AQM0802_BL(i2c.) */
+
+#define LCD_BACKLIGHT PA6
+#define LCD_SCA PB6
+#define LCD_SDL PB7
+
+/////////////////////

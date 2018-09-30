@@ -42,7 +42,10 @@ void init_IO( void ) {
 
   pinMode( BZ, OUTPUT );
 
+  pinMode( LCD_BACKLIGHT, OUTPUT );
+
   digitalWrite( RESET, HIGH );  // RESET SW LED
+  digitalWrite( LCD_BACKLIGHT, HIGH ); // backlight for i2cLCD
 }
 
 void init_TIM5( void ) {
@@ -212,9 +215,18 @@ void pwmHandler2( void ) {
 
 }
 
-// we don't using pwmHandler3&4 now(2018/09/30)
+// we don't using pwmHandler4 now(2018/09/30)
 void pwmHandler3( void ) {
   cnt3++;
+  if ( cnt3 < 500 ) {
+    digitalWrite( LCD_BACKLIGHT, HIGH );
+  }
+  else if ( cnt3 < 1000 ) {
+    digitalWrite( LCD_BACKLIGHT, LOW );
+  }
+  else {
+    cnt3 = 0;
+  }
 }
 
 void pwmHandler4( void ) {
@@ -236,8 +248,9 @@ void setColor( int state_r, int state_g, int state_b ) {
 int getMaru( void ) {
   int ret = 0;
 
-  if ( ps3data[2] == 0x40 && ps3data[7] == 0x40 ) {
-    setColor(1, 0, 0); // 〇
+  if ( ps3data[2] == 0x40 && ps3data[7] == 0x40 &&
+       ps3data[3] == 0x40 && ps3data[4] == 0x40 && ps3data[5] == 0x40 &&  ps3data[6] == 0x40 ) {
+
     ret = 1;
   }
 
@@ -248,8 +261,9 @@ int getMaru( void ) {
 int getSankaku( void ) {
   int ret = 0;
 
-  if ( ps3data[2] == 0x10 && ps3data[7] == 0x10 ) {
-    setColor(0, 1, 0); // △
+  if ( ps3data[2] == 0x10 && ps3data[7] == 0x10 &&
+       ps3data[3] == 0x40 && ps3data[4] == 0x40 && ps3data[5] == 0x40 &&  ps3data[6] == 0x40 ) {
+
     ret = 1;
   }
 
@@ -260,8 +274,9 @@ int getSankaku( void ) {
 int getBatu( void ) {
   int ret = 0;
 
-  if ( ps3data[2] == 0x20 && ps3data[7] == 0x20 ) {
-    setColor(0, 0, 1); // ×
+  if ( ps3data[2] == 0x20 && ps3data[7] == 0x20 &&
+       ps3data[3] == 0x40 && ps3data[4] == 0x40 && ps3data[5] == 0x40 &&  ps3data[6] == 0x40 ) {
+
     ret = 1;
   }
   return ret;
@@ -270,8 +285,9 @@ int getBatu( void ) {
 // ps3 □取得
 int getShikaku( void ) {
   int ret = 0;
-  if ( ps3data[1] == 0x01 && ps3data[7] == 0x01 ) {
-    setColor(1, 0, 1); // □
+  if ( ps3data[1] == 0x01 && ps3data[7] == 0x01 &&
+       ps3data[3] == 0x40 && ps3data[4] == 0x40 && ps3data[5] == 0x40 &&  ps3data[6] == 0x40 ) {
+
     ret = 1;
   }
   return ret;
@@ -280,8 +296,8 @@ int getShikaku( void ) {
 // ps3 ↑取得
 int getUpArrow( void ) {
   int ret = 0;
-  if ( ps3data[2] == 0x01 && ps3data[7] == 0x01 ) {
-    setColor(1, 1, 0); // ↑
+  if ( ps3data[2] == 0x01 && ps3data[7] == 0x01 &&
+       ps3data[3] == 0x40 && ps3data[4] == 0x40 && ps3data[5] == 0x40 &&  ps3data[6] == 0x40 ) {
     ret = 1;
   }
   return ret;
@@ -290,8 +306,8 @@ int getUpArrow( void ) {
 // ps3 ←取得
 int getLeftArrow( void ) {
   int ret = 0;
-  if ( ps3data[2] == 0x08 && ps3data[7] == 0x08 ) {
-    setColor(1, 1, 1); // ←
+  if ( ps3data[2] == 0x08 && ps3data[7] == 0x08 &&
+       ps3data[3] == 0x40 && ps3data[4] == 0x40 && ps3data[5] == 0x40 &&  ps3data[6] == 0x40 ) {
     ret = 1;
   }
   return ret;
@@ -300,8 +316,8 @@ int getLeftArrow( void ) {
 // ps3 →取得
 int getRightArrow( void ) {
   int ret = 0;
-  if ( ps3data[2] == 0x04 && ps3data[7] == 0x04 ) {
-    setColor(0, 1, 1); // →
+  if ( ps3data[2] == 0x04 && ps3data[7] == 0x04 &&
+       ps3data[3] == 0x40 && ps3data[4] == 0x40 && ps3data[5] == 0x40 &&  ps3data[6] == 0x40 ) {
     ret = 1;
   }
   return ret;
@@ -310,8 +326,8 @@ int getRightArrow( void ) {
 // ps3 ↓取得
 int getDownArrow( void ) {
   int ret = 0;
-  if ( ps3data[2] == 0x02 && ps3data[7] == 0x02 ) {
-    setColor(1, 0, 1); // ↓
+  if ( ps3data[2] == 0x02 && ps3data[7] == 0x02 &&
+       ps3data[3] == 0x40 && ps3data[4] == 0x40 && ps3data[5] == 0x40 &&  ps3data[6] == 0x40 ) {
     ret = 1;
   }
   return ret;
@@ -320,9 +336,9 @@ int getDownArrow( void ) {
 // ps3 L1取得
 int getL1( void ) {
   int ret = 0;
-  if ( ps3data[1] == 0x02 && ps3data[7] == 0x02 ) {
+  if ( ps3data[1] == 0x02 && ps3data[7] == 0x02 &&
+       ps3data[3] == 0x40 && ps3data[4] == 0x40 && ps3data[5] == 0x40 &&  ps3data[6] == 0x40 ) {
     // L1
-    setColor(1, 0, 0);
     ret = 1;
   }
   return ret;
@@ -331,9 +347,9 @@ int getL1( void ) {
 // ps3 L2取得
 int getL2( void ) {
   int ret = 0;
-  if ( ps3data[1] == 0x04 && ps3data[7] == 0x04 ) {
+  if ( ps3data[1] == 0x04 && ps3data[7] == 0x04 &&
+       ps3data[3] == 0x40 && ps3data[4] == 0x40 && ps3data[5] == 0x40 &&  ps3data[6] == 0x40 ) {
     // L2
-    setColor(0, 1, 0);
     ret = 1;
   }
   return ret;
@@ -342,9 +358,9 @@ int getL2( void ) {
 // ps3 R1取得
 int getR1( void ) {
   int ret = 0;
-  if ( ps3data[1] == 0x08 && ps3data[7] == 0x08 ) {
+  if ( ps3data[1] == 0x08 && ps3data[7] == 0x08 &&
+       ps3data[3] == 0x40 && ps3data[4] == 0x40 && ps3data[5] == 0x40 &&  ps3data[6] == 0x40 ) {
     // R1
-    setColor(0, 0, 1);
     ret = 1;
   }
   return ret;
@@ -353,25 +369,27 @@ int getR1( void ) {
 // ps3 R2取得
 int getR2( void ) {
   int ret = 0;
-  if ( ps3data[1] == 0x10 && ps3data[7] == 0x10 ) {
+  if ( ps3data[1] == 0x10 && ps3data[7] == 0x10 &&
+       ps3data[3] == 0x40 && ps3data[4] == 0x40 && ps3data[5] == 0x40 &&  ps3data[6] == 0x40 ) {
     // R2
-    setColor(1, 1, 0);
     ret = 1;
   }
   return ret;
 }
 
 int getJoystickPos(int pos) {
-  int raw;
+  int raw[4] = {0, 0, 0, 0};
 
   switch ( pos ) {
     case PS3_JOYSTICK_LEFT_X:
       // 左アナログ左右
       if ( ps3data[1] == 0x00 && ps3data[2] == 0x00 &&
            ps3data[4] == 0x40 && ps3data[5] == 0x40 && ps3data[6] == 0x40 ) {
-        raw = ps3data[3];
+        DC_Power[0] = ps3data[3];
+
         setColor(1, 0, 0);
 
+        return DC_Power[0];
       }
       break;
 
@@ -379,8 +397,11 @@ int getJoystickPos(int pos) {
       // 左アナログ上下
       if ( ps3data[1] == 0x00 && ps3data[2] == 0x00 &&
            ps3data[3] == 0x40 && ps3data[5] == 0x40 && ps3data[6] == 0x40 ) {
-        raw = ps3data[4];
-        setColor(0, 1, 0);
+        DC_Power[1] = ps3data[4];
+        setColor(0, 0, 1);
+
+        return DC_Power[1];
+
       }
       break;
 
@@ -388,24 +409,27 @@ int getJoystickPos(int pos) {
       // 右アナログ左右
       if ( ps3data[1] == 0x00 && ps3data[2] == 0x00 &&
            ps3data[3] == 0x40 && ps3data[4] == 0x40 && ps3data[6] == 0x40 ) {
-        raw = ps3data[5];
-        setColor(0, 0, 1);
+        DC_Power[2] = ps3data[5];
+        setColor(0, 1, 0);
+
+        return DC_Power[2];
+ 
       }
       break;
+    /*
+        case PS3_JOYSTICK_RIGHT_Y:
+          // 右アナログ上下
+          if ( ps3data[1] == 0x00 && ps3data[2] == 0x00 &&
+               ps3data[3] == 0x40 && ps3data[4] == 0x40 && ps3data[5] == 0x40 ) {
 
-    case PS3_JOYSTICK_RIGHT_Y:
-      // 右アナログ上下
-      if ( ps3data[1] == 0x00 && ps3data[2] == 0x00 &&
-           ps3data[3] == 0x40 && ps3data[4] == 0x40 && ps3data[5] == 0x40 ) {
-        raw = ps3data[6];
-        setColor(1, 0, 1);
-      }
-      break;
-
+            raw[3] = ps3data[6];
+            setColor(1, 0, 1);
+ 
+          }
+          break;
+    */
     default:
       break;
   }
-
-  return raw;
 }
 
