@@ -20,15 +20,10 @@
 
 HardwareSerial SerialPS3( USART3, PB10, PB11 );
 
-int now_sw;
-int old_sw;
 int i = 0;
 int connectFlag = 0;
-unsigned char DC_Power[4] = {0};
+unsigned char DC_Power[4] = {64, 64, 64, 64};
 
-unsigned char x = 0, y = 0;
-unsigned long chksum;
-unsigned long timer_set = 0;
 unsigned char ps3data[8] = { 0x00 };
 
 void setup() {
@@ -46,27 +41,6 @@ void loop() {
 
   get_ps3();
 
-
-  getJoystickPos( PS3_JOYSTICK_RIGHT_X );
-
-  now_sw = digitalRead( SW1 );
-
-  if ( now_sw && !old_sw ) {
-    digitalWrite(LED1, HIGH);
-    timer_set += 1000;
-    if ( timer_set > 16000 ) {
-      timer_set = 0;
-      digitalWrite(LED1, LOW );
-    }
-  }
-  // OK.
-  pwmWrite( TIM1_CH1, 0 );
-  pwmWrite( TIM1_CH2, timer_set );
-  pwmWrite( TIM1_CH3, timer_set );
-  pwmWrite( TIM1_CH4, 0 );
-
-  // OK.
-
   getJoystickPos( PS3_JOYSTICK_LEFT_X );
   pwmWrite( TIM8_CH1, 200 * (sin(2 * 3.14 / 256 * (getDCpower(0) - 64)) + 1) * 128);
   pwmWrite( TIM8_CH2, 200 * (sin(2 * 3.14 / 256 * (getDCpower(0) + 64)) + 1) * 128);
@@ -75,12 +49,12 @@ void loop() {
   pwmWrite( TIM8_CH3, 200 * (sin(2 * 3.14 / 256 * (getDCpower(1) - 64)) + 1) * 128);
   pwmWrite( TIM8_CH4, 200 * (sin(2 * 3.14 / 256 * (getDCpower(1) + 64)) + 1) * 128);
 
-  /*
-    getJoystickPos( PS3_JOYSTICK_LEFT_Y );
-    pwmWrite( TIM8_CH3, 200 * (sin(2 * 3.14 / 256 * ((millis() / 100) - 64)) + 1) * 128);
-    pwmWrite( TIM8_CH4, 200 * (sin(2 * 3.14 / 256 * ((millis() / 100) + 64)) + 1) * 128);
-  */
-  old_sw = now_sw;
+
+  getJoystickPos( PS3_JOYSTICK_RIGHT_X );
+  pwmWrite( TIM1_CH1, 200 * (sin(2 * 3.14 / 256 * (getDCpower(2) - 64)) + 1) * 128);
+  pwmWrite( TIM1_CH2, 200 * (sin(2 * 3.14 / 256 * (getDCpower(2) + 64)) + 1) * 128);
+  pwmWrite( TIM1_CH3, 200 * (sin(2 * 3.14 / 256 * ((millis() / 10) - 64)) + 1) * 128);
+  pwmWrite( TIM1_CH4, 200 * (sin(2 * 3.14 / 256 * ((millis() / 10) + 64)) + 1) * 128);
 }
 
 

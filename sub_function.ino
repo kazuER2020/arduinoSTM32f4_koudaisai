@@ -148,10 +148,10 @@ void pwmHandler2( void ) {
   }
 
   if ( getL1() && moveFlag == 1) {
-    if ( cnt2 < 30 ) {
+    if ( cnt2 < 73 ) {
       digitalWrite(SUB3, HIGH);
     }
-    else if ( cnt2 < 100 ) {
+    else if ( cnt2 < 180 ) {
       digitalWrite( SUB3, LOW);
     }
     else {
@@ -231,6 +231,17 @@ void pwmHandler3( void ) {
 
 void pwmHandler4( void ) {
   cnt4++;
+  if ( digitalRead(SW3) == HIGH ) {
+    if ( cnt4 < 3) {
+      digitalWrite(BZ, HIGH);
+    }
+    else if (cnt4 < 4) {
+      digitalWrite(BZ, LOW);
+    }
+    else {
+      cnt4 = 0;
+    }
+  }
 }
 
 ////////////////////////////////////////////////////////////
