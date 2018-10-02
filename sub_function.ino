@@ -395,7 +395,7 @@ void getJoystickPos( int pos ) {
       // 左アナログ左右
       if ( ps3data[1] == 0x00 && ps3data[2] == 0x00 &&
            ps3data[4] == 0x40 && ps3data[5] == 0x40 && ps3data[6] == 0x40 ) {
-        DC_Power[0] = ps3data[3];
+        dc_power[0] = ps3data[3];
 
         setColor(1, 0, 0);
 
@@ -406,7 +406,7 @@ void getJoystickPos( int pos ) {
       // 左アナログ上下
       if ( ps3data[1] == 0x00 && ps3data[2] == 0x00 &&
            ps3data[3] == 0x40 && ps3data[5] == 0x40 && ps3data[6] == 0x40 ) {
-        DC_Power[1] = ps3data[4];
+        dc_power[1] = ps3data[4];
         setColor(0, 0, 1);
       }
       break;
@@ -415,7 +415,7 @@ void getJoystickPos( int pos ) {
       // 右アナログ左右
       if ( ps3data[1] == 0x00 && ps3data[2] == 0x00 &&
            ps3data[3] == 0x40 && ps3data[4] == 0x40 && ps3data[6] == 0x40 ) {
-        DC_Power[2] = ps3data[5];
+        dc_power[2] = ps3data[5];
         setColor(0, 1, 0);
       }
       break;
@@ -437,6 +437,6 @@ void getJoystickPos( int pos ) {
 }
 
 int getDCpower( int motor_num ) {
-  return DC_Power[ motor_num ];
+  return dc_power[ motor_num ];
 }
 

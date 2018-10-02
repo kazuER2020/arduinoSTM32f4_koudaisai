@@ -22,7 +22,7 @@ HardwareSerial SerialPS3( USART3, PB10, PB11 );
 
 int i = 0;
 int connectFlag = 0;
-unsigned char DC_Power[4] = {64, 64, 64, 64};
+unsigned char dc_power[4] = {64, 64, 64, 64};
 
 unsigned char ps3data[8] = { 0x00 };
 
