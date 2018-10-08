@@ -19,6 +19,7 @@
 #define PS3_JOYSTICK_RIGHT_Y 4
 
 HardwareSerial SerialPS3( USART3, PB10, PB11 );
+HardwareSerial Serial_Mizz( USART1, PA9, PA10 );
 
 int i = 0;
 int connectFlag = 0;
@@ -30,7 +31,10 @@ void setup() {
 
   init_IO();
   SerialPS3.begin(2400);
+  Serial_Mizz.begin(9600);
+  Serial.begin(9600);
   while (!SerialPS3);
+  while (!Serial_Mizz);
   init_TIM5();
   i = 0;
   connectFlag = 0;
@@ -41,37 +45,58 @@ void loop() {
 
   get_ps3();
 
-  getJoystickPos( PS3_JOYSTICK_LEFT_X );
-  pwmWrite( TIM8_CH1, 200 * (sin(2 * 3.14 / 256 * (getDCpower(0) - 64)) + 1) * 128);
-  pwmWrite( TIM8_CH2, 200 * (sin(2 * 3.14 / 256 * (getDCpower(0) + 64)) + 1) * 128);
-
-  getJoystickPos( PS3_JOYSTICK_LEFT_Y );
-  pwmWrite( TIM8_CH3, 200 * (sin(2 * 3.14 / 256 * (getDCpower(1) - 64)) + 1) * 128);
-  pwmWrite( TIM8_CH4, 200 * (sin(2 * 3.14 / 256 * (getDCpower(1) + 64)) + 1) * 128);
-
-
-  getJoystickPos( PS3_JOYSTICK_RIGHT_X );
-  pwmWrite( TIM1_CH1, 200 * (sin(2 * 3.14 / 256 * (getDCpower(2) - 64)) + 1) * 128);
-  pwmWrite( TIM1_CH2, 200 * (sin(2 * 3.14 / 256 * (getDCpower(2) + 64)) + 1) * 128);
-  pwmWrite( TIM1_CH3, 200 * (sin(2 * 3.14 / 256 * ((millis() / 10) - 64)) + 1) * 128);
-  pwmWrite( TIM1_CH4, 200 * (sin(2 * 3.14 / 256 * ((millis() / 10) + 64)) + 1) * 128);
+  if ( getJoystickPos( PS3_JOYSTICK_LEFT_X ) == PS3_JOYSTICK_LEFT_X ) {
+    motor_X();
+  }
+  if ( getJoystickPos( PS3_JOYSTICK_LEFT_Y ) == PS3_JOYSTICK_LEFT_Y ) {
+    motor_Y();
+  }
+  if ( getJoystickPos( PS3_JOYSTICK_RIGHT_X ) == PS3_JOYSTICK_RIGHT_X ) {
+    motor_rotate();
+  }
 }
 
 
-void get_ps3()
-{
-  int i;
-  if (SerialPS3.available() >= 8) { //8byte以上あるかチェック
-    if ( connectFlag == 0 ) {
-      connectFlag = 1;
-      // setColor(1, 1, 1);
-    }
-    if (SerialPS3.read() == 0x80) { //１byte読み込んで0x80のスタートビットかチェック
-      for (i = 1; i < 8; i++) { //スタートビットは読み込み済みなので、次の７個のデータを読み込む。
-        ps3data[i] = SerialPS3.read();
-      }
-    }
-  }
+void motor_Y( void ) {
+  getJoystickPos( PS3_JOYSTICK_LEFT_Y );
+  pwmWrite( TIM1_CH1, 200 * (sin(2 * 3.14 / 256 * (getDCpower(1) + 64)) + 1) * 128);
+  pwmWrite( TIM1_CH2, 200 * (sin(2 * 3.14 / 256 * (getDCpower(1) - 64)) + 1) * 128);
+  pwmWrite( TIM1_CH3, 200 * (sin(2 * 3.14 / 256 * (getDCpower(1) + 64)) + 1) * 128);
+  pwmWrite( TIM1_CH4, 200 * (sin(2 * 3.14 / 256 * (getDCpower(1) - 64)) + 1) * 128);
+  pwmWrite( TIM8_CH1, 200 * (sin(2 * 3.14 / 256 * (getDCpower(1) - 64)) + 1) * 128);
+  pwmWrite( TIM8_CH2, 200 * (sin(2 * 3.14 / 256 * (getDCpower(1) + 64)) + 1) * 128);
+  pwmWrite( TIM8_CH3, 200 * (sin(2 * 3.14 / 256 * (getDCpower(1) - 64)) + 1) * 128);
+  pwmWrite( TIM8_CH4, 200 * (sin(2 * 3.14 / 256 * (getDCpower(1) + 64)) + 1) * 128);
+
+}
+
+
+
+void motor_X( void ) {
+  getJoystickPos( PS3_JOYSTICK_LEFT_X );
+  pwmWrite( TIM1_CH1, 200 * (sin(2 * 3.14 / 256 * (getDCpower(0) - 64)) + 1) * 128);
+  pwmWrite( TIM1_CH2, 200 * (sin(2 * 3.14 / 256 * (getDCpower(0) + 64)) + 1) * 128);
+  pwmWrite( TIM1_CH3, 200 * (sin(2 * 3.14 / 256 * (getDCpower(0) + 64)) + 1) * 128);
+  pwmWrite( TIM1_CH4, 200 * (sin(2 * 3.14 / 256 * (getDCpower(0) - 64)) + 1) * 128);
+  pwmWrite( TIM8_CH1, 200 * (sin(2 * 3.14 / 256 * (getDCpower(0) - 64)) + 1) * 128);
+  pwmWrite( TIM8_CH2, 200 * (sin(2 * 3.14 / 256 * (getDCpower(0) + 64)) + 1) * 128);
+  pwmWrite( TIM8_CH3, 200 * (sin(2 * 3.14 / 256 * (getDCpower(0) + 64)) + 1) * 128);
+  pwmWrite( TIM8_CH4, 200 * (sin(2 * 3.14 / 256 * (getDCpower(0) - 64)) + 1) * 128);
+
+}
+
+
+void motor_rotate( void ) {
+  getJoystickPos( PS3_JOYSTICK_RIGHT_X );
+  pwmWrite( TIM1_CH1, 200 * (sin(2 * 3.14 / 256 * (getDCpower(2) + 64)) + 1) * 128);
+  pwmWrite( TIM1_CH2, 200 * (sin(2 * 3.14 / 256 * (getDCpower(2) - 64)) + 1) * 128);
+  pwmWrite( TIM1_CH3, 200 * (sin(2 * 3.14 / 256 * (getDCpower(2) + 64)) + 1) * 128);
+  pwmWrite( TIM1_CH4, 200 * (sin(2 * 3.14 / 256 * (getDCpower(2) - 64)) + 1) * 128);
+  pwmWrite( TIM8_CH1, 200 * (sin(2 * 3.14 / 256 * (getDCpower(2) + 64)) + 1) * 128);
+  pwmWrite( TIM8_CH2, 200 * (sin(2 * 3.14 / 256 * (getDCpower(2) - 64)) + 1) * 128);
+  pwmWrite( TIM8_CH3, 200 * (sin(2 * 3.14 / 256 * (getDCpower(2) + 64)) + 1) * 128);
+  pwmWrite( TIM8_CH4, 200 * (sin(2 * 3.14 / 256 * (getDCpower(2) - 64)) + 1) * 128);
+
 }
 
 /* end of file */

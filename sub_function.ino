@@ -255,6 +255,22 @@ void setColor( int state_r, int state_g, int state_b ) {
 
 ////////////////////////////////////////////////////////////
 
+void get_ps3()
+{
+  int i;
+  if (SerialPS3.available() >= 8) { //8byte以上あるかチェック
+    if ( connectFlag == 0 ) {
+      connectFlag = 1;
+      // setColor(1, 1, 1);
+    }
+    if (SerialPS3.read() == 0x80) { //１byte読み込んで0x80のスタートビットかチェック
+      for (i = 1; i < 8; i++) { //スタートビットは読み込み済みなので、次の７個のデータを読み込む。
+        ps3data[i] = SerialPS3.read();
+      }
+    }
+  }
+}
+
 // ps3 〇取得
 int getMaru( void ) {
   int ret = 0;
@@ -388,8 +404,8 @@ int getR2( void ) {
   return ret;
 }
 
-void getJoystickPos( int pos ) {
-
+int getJoystickPos( int pos ) {
+  int code;
   switch ( pos ) {
     case PS3_JOYSTICK_LEFT_X:
       // 左アナログ左右
@@ -398,7 +414,7 @@ void getJoystickPos( int pos ) {
         dc_power[0] = ps3data[3];
 
         setColor(1, 0, 0);
-
+        code = PS3_JOYSTICK_LEFT_X;
       }
       break;
 
@@ -408,6 +424,7 @@ void getJoystickPos( int pos ) {
            ps3data[3] == 0x40 && ps3data[5] == 0x40 && ps3data[6] == 0x40 ) {
         dc_power[1] = ps3data[4];
         setColor(0, 0, 1);
+        code = PS3_JOYSTICK_LEFT_Y;
       }
       break;
 
@@ -417,6 +434,7 @@ void getJoystickPos( int pos ) {
            ps3data[3] == 0x40 && ps3data[4] == 0x40 && ps3data[6] == 0x40 ) {
         dc_power[2] = ps3data[5];
         setColor(0, 1, 0);
+        code = PS3_JOYSTICK_RIGHT_X;
       }
       break;
     /*
@@ -432,8 +450,11 @@ void getJoystickPos( int pos ) {
           break;
     */
     default:
+      setColor(0, 0, 0);
+      code = -1;
       break;
   }
+  return code;
 }
 
 int getDCpower( int motor_num ) {
